@@ -7,7 +7,7 @@ let theButtons = document.querySelectorAll("#buttonHolder img"),
 
 function changeBGImage() {
     puzzleBoard.style.backgroundImage = `url(images/backGround${this.id}.jpg)`;
-    
+
     // Remove puzzle pieces from drop zones
     dropZones.forEach(zone => {
         while (zone.children.length > 0) {
@@ -29,12 +29,12 @@ function handleDragOver(e) {
 function handleDrop(e) { 
     e.preventDefault();
     console.log('dropped something on me');
-    
+
     if (this.children.length > 0) {
         // if the drop zone already has a puzzle piece, return without doing anything
         return;
     }
-    
+
     this.appendChild(draggedPiece);
 }
 
@@ -42,3 +42,20 @@ theButtons.forEach(button => button.addEventListener("click", changeBGImage));
 puzzlePieces.forEach(piece => piece.addEventListener("dragstart", handleStartDrag));
 dropZones.forEach(zone => zone.addEventListener("dragover", handleDragOver));
 dropZones.forEach(zone => zone.addEventListener("drop", handleDrop));
+
+function resetPuzzle() {
+    // Remove puzzle pieces from drop zones and reparent to puzzle board
+    dropZones.forEach(zone => {
+        while (zone.children.length > 0) {
+            puzzleBoard.appendChild(zone.children[0]);
+        }
+    });
+    
+    // Shuffle puzzle pieces
+    let shuffledPieces = Array.from(puzzlePieces).sort(() => Math.random() - 0.5);
+    
+    // Reparent puzzle pieces to puzzle board in shuffled order
+    shuffledPieces.forEach(piece => puzzleBoard.appendChild(piece));
+}
+
+document.querySelector('#resetButton').addEventListener('click', resetPuzzle);
